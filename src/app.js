@@ -8,6 +8,22 @@ const app = react();
 
 
 app.get('/user', (req, res) =>{
+    console.log(req.query);
+    res.send({
+        name: "hi",
+        city:"jojo"
+    })
+});
+
+app.get('/user/:userid', (req, res) =>{
+    console.log(req.params);
+    res.send({
+        name: "hi",
+        city:"jojo"
+    })
+});
+app.get('/user/:userid/:name/:password', (req, res) =>{
+    console.log(req.params);
     res.send({
         name: "hi",
         city:"jojo"
