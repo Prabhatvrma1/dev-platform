@@ -2,18 +2,9 @@ const express = require('express');
 const http = require('http');
 
 const app = express();
-//diff between app = react and app = express is that react is used for frontend and express is used for backend
-//what will happen if we use react instead of express is that we will not be able to create a server and handle the api calls and we will not be able to use the middleware and other features of express
 
-//handle auth niddleware for all the get post all apis
-//app.use("/admin"); //this will match all the api req to /admin and then we can check the token and then we can send the response accordingly
 
-const auth = require('./middlewares/auth');
 
-app.use("/admin", auth); //this will match all the api req to /admin and then we can check the token and then we can send the response accordingly
-app.get("/admin/data", (req, res) => {
-    res.send("all data is here");
-});
 
 app.listen(3000, ( req, res) =>{
     console.log('Server is running on port 3000');
@@ -22,7 +13,7 @@ app.listen(3000, ( req, res) =>{
 
 
 
-
+ 
 
 
 
@@ -116,4 +107,36 @@ app.listen(3000, ( req, res) =>{
 // });
 
 
+//diff between app = react and app = express is that react is used for frontend and express is used for backend
+//what will happen if we use react instead of express is that we will not be able to create a server and handle the api calls and we will not be able to use the middleware and other features of express
 
+//handle auth niddleware for all the get post all apis
+//app.use("/admin"); //this will match all the api req to /admin and then we can check the token and then we can send the response accordingly
+
+// const auth = require('./middlewares/auth');
+
+// app.use("/admin", auth); //this will match all the api req to /admin and then we can check the token and then we can send the response accordingly
+// app.get("/admin/data", (req, res) => {
+//     res.send("all data is here");
+// });
+
+
+// app.get("/user", (req, res) =>{
+//     throw new Error("ebde");
+// }); 
+// app.get("/user", (req, res) =>{
+//     try{
+//         throw new Error("hduid");
+//     }
+//     catch(err){
+//         res.status(500).send("something went wrong");
+//     }
+
+// });
+
+
+// app.use("/" , (err , req, res, next) => {
+//     if(err){
+//         res.status(500).send("something went wrong");
+//     }
+// });
