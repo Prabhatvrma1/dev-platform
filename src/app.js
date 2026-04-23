@@ -5,19 +5,15 @@ const app = express();
 //diff between app = react and app = express is that react is used for frontend and express is used for backend
 //what will happen if we use react instead of express is that we will not be able to create a server and handle the api calls and we will not be able to use the middleware and other features of express
 
-app.use('/user', (req, res, next) => {
-    //route handler () ={} 
-    next();
-    //res.send("r1");
-    console.log("middleware 1");
-},
-(req, res) =>{
-    res.send("r2");
-}
-); //output will be r2 and middleware 1 because we are using next() in the first middleware and then we are sending the response in the second middleware
+//handle auth niddleware for all the get post all apis
+//app.use("/admin"); //this will match all the api req to /admin and then we can check the token and then we can send the response accordingly
 
+const auth = require('./middlewares/auth');
 
-
+app.use("/admin", auth); //this will match all the api req to /admin and then we can check the token and then we can send the response accordingly
+app.get("/admin/data", (req, res) => {
+    res.send("all data is here");
+});
 
 app.listen(3000, ( req, res) =>{
     console.log('Server is running on port 3000');
@@ -74,3 +70,50 @@ app.listen(3000, ( req, res) =>{
 //         city:"jojo"
 //     })
 // });
+
+
+
+// app.use('/user', 
+//     (req, res, next) => {
+//     //route handler () ={} 
+//     next();
+//     //res.send("r1");
+//     console.log("middleware 1");
+// },
+// (req, res) =>{
+//     res.send("r2");
+//     console.log("middleware 2");
+// }
+// ); //output will be r2 and middleware 1 because we are using next() in the first middleware and then we are sending the response in the second middleware
+
+
+// app.get( "/user",
+//     (req, res, next) =>{
+//     console.log("middleware 1");
+//     next();
+// },   
+// );
+// app.get("/user", (req, res,next) =>{
+    
+//     console.log("middleware 2");
+//     res.send("sencond middleware");
+// });
+
+
+
+// app.use("/admin", (req, res, next) => {
+//     const token = "xyz123";
+//     if (token !== "xyz123") {
+//        return res.status(401).send("unauthorized");
+
+//     } else {
+//         next();
+//     }
+// });
+
+// app.get("/admin/data", (req, res) => {
+//     res.send("all data is here");
+// });
+
+
+
