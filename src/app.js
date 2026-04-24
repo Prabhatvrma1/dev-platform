@@ -14,9 +14,13 @@ app.post("/signup", async (req, res) => {
         gender :"male"
     });
     //creating qa new instance
-    await userobj.save();
-    res.send("user created successfully"); 
-    //const user = new User(userobj);
+    try{
+        await userobj.save();
+    res.send("user created successfully");
+    }
+    catch(err){
+        res.status(500).send("something went wrong");
+     }
 });
 
 
@@ -161,3 +165,4 @@ connectdb().then( ()=>{
 //         res.status(500).send("something went wrong");
 //     }
 // });
+
