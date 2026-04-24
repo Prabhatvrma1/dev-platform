@@ -1,6 +1,6 @@
 const express = require('express');
 const http = require('http');
-
+require('./config/database');
 const app = express();
 
 
