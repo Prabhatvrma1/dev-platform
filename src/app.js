@@ -2,6 +2,22 @@ const express = require('express');
 const http = require('http');
 const connectdb = require('./config/database');
 const app = express();
+const User = require('./models/user');
+
+app.post("/signup", async (req, res) => {
+    const userobj = new User({
+        firstName :"prabh",
+        lastName : "singh",
+        email :"123@gmail.com",
+        password : "123",
+        age : 23,
+        gender :"male"
+    });
+    //creating qa new instance
+    await userobj.save();
+    res.send("user created successfully"); 
+    //const user = new User(userobj);
+});
 
 
 connectdb().then( ()=>{
