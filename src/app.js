@@ -11,7 +11,7 @@ const auth = require('./middlewares/auth');
 const bcrypt = require('bcrypt');
 app.use(express.json());
 
-
+//sign up page code
 app.post("/signup" , async (req, res) => {
     try{
 
@@ -75,11 +75,11 @@ app.post("/login", async (req, res) => {
 
         const user = await User.findOne({ email: emailid });
         if(!user){
-            return res.status(400).send("invalid email id ");
+            return res.status(400).send("invalid email id or password");
         }
         const passmatch = await bcrypt.compare(password, user.password);
         if(!passmatch){
-            return res.status(400).send("invalid password");
+            return res.status(400).send("invalid email id or password");
         }
         res.send("login successful");
     }
