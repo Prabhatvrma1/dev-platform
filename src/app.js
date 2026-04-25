@@ -6,14 +6,34 @@ const User = require('./models/user');
 const { userInfo } = require('os');
 app.use(express.json()); //this will parse the json data from the request body and make it available in req.body    
 const validator = require('validator');
+const validatesignupdata = require('./utils/validation');
+const auth = require('./middlewares/auth');
 
-//learn validation 
-// data sanitization and schema validation 
-
-//update user by id
-// going to use npm validator library for gmail validation and other validation
+app.use(express.json());
 
 
+app.post("/signup" , async (req, res) => {
+    try{
+
+    //validate the signup data
+    validatesignupdata(req);
+
+    //encrypt the password
+    
+
+    //create a new user in the database
+    const userobj = new User(req.body);
+    await userobj.save();
+    res.send("user created successfully");
+    }
+    catch(err){
+    console.log(err.message); // 👈 ADD THIS
+    res.status(400).send(err.message); // show real error
+    }
+}
+
+);
+  
 app.patch("/user/:userid", async (req, res) => {
     const userid = req.params?.userid;
     const updateData = req.body;
@@ -36,8 +56,7 @@ app.patch("/user/:userid", async (req, res) => {
     }catch(err){
         res.status(500).send("for update user something went wrong");
     }
-});   
-  
+}); 
 
 
 connectdb().then( ()=>{
@@ -261,3 +280,37 @@ connectdb().then( ()=>{
 //         res.status(500).send("for update user something went wrong");
 //     }
 // });   
+
+
+
+
+//learn validation 
+// data sanitization and schema validation 
+
+//update user by id
+// going to use npm validator library for gmail validation and other validation
+
+
+// app.patch("/user/:userid", async (req, res) => {
+//     const userid = req.params?.userid;
+//     const updateData = req.body;
+    
+//     try{    
+//         const user = await User.findByIdAndUpdate(userid, updateData, { new: true, runValidators: true });
+//         res.send(user); 
+//         const allowed_updated = [ "age", "gender", "photourl", "about", "skills" ];
+//         const isupadateallowed = Object.keys(updateData).every((key) => allowed_updated.includes(key));
+//         if(!isupadateallowed){
+//         //return res.status(400).send("invalid update");
+//             throw new Error("invalid update");
+//         }
+//         if(updateData.skills.size > 10){
+//             throw new Error ("skills can not more thann 10");
+//         }
+//         // if(updateData.email && !validator.isEmail(updateData.email)){
+//         //     throw new Error("invalid email");
+//         // }
+//     }catch(err){
+//         res.status(500).send("for update user something went wrong");
+//     }
+// }); 
