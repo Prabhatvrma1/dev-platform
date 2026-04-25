@@ -67,6 +67,28 @@ app.patch("/user/:userid", async (req, res) => {
 }); 
 
 
+// login page cdoe
+app.post("/login", async (req, res) => {
+    try{
+        const emailid = req.body.email;
+        const password = req.body.password;
+
+        const user = await User.findOne({ email: emailid });
+        if(!user){
+            return res.status(400).send("invalid email id ");
+        }
+        const passmatch = await bcrypt.compare(password, user.password);
+        if(!passmatch){
+            return res.status(400).send("invalid password");
+        }
+        res.send("login successful");
+    }
+
+    catch(err){
+        res.status(500).send("for login something went wrong");
+    }
+});
+
 connectdb().then( ()=>{
     console.log("database connected");
     app.listen(3000, ( req, res) =>{
