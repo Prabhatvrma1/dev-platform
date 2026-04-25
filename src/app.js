@@ -8,20 +8,20 @@ app.use(express.json()); //this will parse the json data from the request body a
 
 
 //learn validation 
-
-
+// data sanitization and schema validation 
 
 //update user by id
 app.patch("/user", async (req, res) => {
     const userid = req.body.userid;
     const updateData = req.body;
     try{
-        const user = await User.findByIdAndUpdate(userid, updateData, { new: true });
+        const user = await User.findByIdAndUpdate(userid, updateData, { new: true, runValidators: true });
         res.send(user);
     }catch(err){
         res.status(500).send("for update user something went wrong");
     }
 });   
+  
 
 
 connectdb().then( ()=>{
@@ -233,3 +233,15 @@ connectdb().then( ()=>{
 //         res.status(500).send("for delete user something went wrong");
 //     }
 // });
+
+//update user by id
+// app.patch("/user", async (req, res) => {
+//     const userid = req.body.userid;
+//     const updateData = req.body;
+//     try{
+//         const user = await User.findByIdAndUpdate(userid, updateData, { new: true });
+//         res.send(user);
+//     }catch(err){
+//         res.status(500).send("for update user something went wrong");
+//     }
+// });   
