@@ -3,21 +3,25 @@ const http = require('http');
 const connectdb = require('./config/database');
 const app = express();
 const User = require('./models/user');
+const { userInfo } = require('os');
 app.use(express.json()); //this will parse the json data from the request body and make it available in req.body    
 
 
-app.post("/signup", async (req, res) => {
-    const userobj = new User(req.body);
+//learn validation 
 
+
+
+//update user by id
+app.patch("/user", async (req, res) => {
+    const userid = req.body.userid;
+    const updateData = req.body;
     try{
-        await userobj.save();
-    res.send("user created successfully");
+        const user = await User.findByIdAndUpdate(userid, updateData, { new: true });
+        res.send(user);
+    }catch(err){
+        res.status(500).send("for update user something went wrong");
     }
-    catch(err){
-        res.status(500).send("something went wrong");
-    }
-
-});
+});   
 
 
 connectdb().then( ()=>{
@@ -181,4 +185,51 @@ connectdb().then( ()=>{
 //     catch(err){
 //         res.status(500).send("something went wrong");
 //      }
+// });
+
+//app.post("/signup", async (req, res) => {
+//     const userobj = new User(req.body);
+
+//     try{
+//         await userobj.save();
+//     res.send("user created successfully");
+//     }
+//     catch(err){
+//         res.status(500).send("something went wrong");
+//     }
+// });
+
+// //finf user by email
+// app.get("/user", async (req,res) =>{
+//     const emailid = req.body.email;  
+//     try {
+//     const user = await User.findOne({ email: emailid });
+//     res.send(user);
+//     console.log(user); 
+//     } 
+//     catch(err){
+//         res.status(500).send("for user something went wrong");
+//     }
+// });
+
+
+// app.get("/feed ", (req,res) =>{
+//      try{
+//         const user = User.find();
+//         res.send(user);
+//      }
+//     catch(err){
+//         res.status(500).send("for feed something went wrong");
+//      }  
+// });
+
+// app.delete("/user", async (req, res) => {
+//     const userid = req.body.userid;
+//     try{
+//         const user = await User.findByIdAndDelete(userid);
+//         res.send("user deleted successfully");
+//     }
+//     catch(err){
+//         res.status(500).send("for delete user something went wrong");
+//     }
 // });
