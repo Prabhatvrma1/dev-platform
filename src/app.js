@@ -8,21 +8,30 @@ app.use(express.json()); //this will parse the json data from the request body a
 const validator = require('validator');
 const validatesignupdata = require('./utils/validation');
 const auth = require('./middlewares/auth');
-
+const bcrypt = require('bcrypt');
 app.use(express.json());
 
 
 app.post("/signup" , async (req, res) => {
     try{
 
+
     //validate the signup data
     validatesignupdata(req);
 
+    const password = req.body.password;
+
     //encrypt the password
-    
+    const passwordhash = await bcrypt.hash(password, 10);
 
     //create a new user in the database
-    const userobj = new User(req.body);
+    const userobj = new User({
+        firstName : req.body.firstName,
+        lastName : req.body.lastName,
+        email : req.body.email,
+        password : passwordhash,
+        
+    });
     await userobj.save();
     res.send("user created successfully");
     }
@@ -32,8 +41,7 @@ app.post("/signup" , async (req, res) => {
     }
 }
 
-);
-  
+);  
 app.patch("/user/:userid", async (req, res) => {
     const userid = req.params?.userid;
     const updateData = req.body;
