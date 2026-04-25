@@ -3,24 +3,20 @@ const http = require('http');
 const connectdb = require('./config/database');
 const app = express();
 const User = require('./models/user');
+app.use(express.json()); //this will parse the json data from the request body and make it available in req.body    
+
 
 app.post("/signup", async (req, res) => {
-    const userobj = new User({
-        firstName :"prabh",
-        lastName : "singh",
-        email :"123@gmail.com",
-        password : "123",
-        age : 23,
-        gender :"male"
-    });
-    //creating qa new instance
+    const userobj = new User(req.body);
+
     try{
         await userobj.save();
     res.send("user created successfully");
     }
     catch(err){
         res.status(500).send("something went wrong");
-     }
+    }
+
 });
 
 
@@ -166,3 +162,23 @@ connectdb().then( ()=>{
 //     }
 // });
 
+
+
+// app.post("/signup", async (req, res) => {
+//     const userobj = new User({
+//         firstName :"prabh",
+//         lastName : "singh",
+//         email :"123@gmail.com",
+//         password : "123",
+//         age : 23,
+//         gender :"male"
+//     });
+//     //creating qa new instance
+//     try{
+//         await userobj.save();
+//     res.send("user created successfully");
+//     }
+//     catch(err){
+//         res.status(500).send("something went wrong");
+//      }
+// });
