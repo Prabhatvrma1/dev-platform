@@ -5,18 +5,34 @@ const app = express();
 const User = require('./models/user');
 const { userInfo } = require('os');
 app.use(express.json()); //this will parse the json data from the request body and make it available in req.body    
-
+const validator = require('validator');
 
 //learn validation 
 // data sanitization and schema validation 
 
 //update user by id
-app.patch("/user", async (req, res) => {
-    const userid = req.body.userid;
+// going to use npm validator library for gmail validation and other validation
+
+
+app.patch("/user/:userid", async (req, res) => {
+    const userid = req.params?.userid;
     const updateData = req.body;
-    try{
+    
+    try{    
         const user = await User.findByIdAndUpdate(userid, updateData, { new: true, runValidators: true });
-        res.send(user);
+        res.send(user); 
+        const allowed_updated = [ "age", "gender", "photourl", "about", "skills" ];
+        const isupadateallowed = Object.keys(updateData).every((key) => allowed_updated.includes(key));
+        if(!isupadateallowed){
+        //return res.status(400).send("invalid update");
+            throw new Error("invalid update");
+        }
+        if(updateData.skills.size > 10){
+            throw new Error ("skills can not more thann 10");
+        }
+        // if(updateData.email && !validator.isEmail(updateData.email)){
+        //     throw new Error("invalid email");
+        // }
     }catch(err){
         res.status(500).send("for update user something went wrong");
     }
