@@ -86,13 +86,11 @@ app.post("/login", async (req, res) => {
         if(passmatch){
             //create a jwt token 
             const token = await jwt.sign({ userid: user._id },"secretkeyhawww");
-            console.log(token);
-
-            //add tocken to cookie and send the response back to user
-            
+            //add tocken to cookie and send the response back to user 
             const decodedmessage = await jwt.verify(token, "secretkeyhawww");
             const { _id } = decodedmessage;
-
+             console.log("decoded message", decodedmessage);
+             res.send("login successful");
         } 
         else{
             return res.status(400).send("invalid email id or password");
@@ -104,29 +102,29 @@ app.post("/login", async (req, res) => {
     }
 });
 
-app.get("/profile", async (req, res) => {
+app.get("/profile", auth , async (req, res) => {
 
     try{
-        const cookie = req.cookies;
-        const { token } = cookie;
-        if(!token){
-            throw new Error("unauthorized");
-        }
-        const decodedmessage = await jwt.verify(token, "secretkeyhawww");
-        const { _id } = decodedmessage;
-        const user = await User.findById(_id);
-        if(!user){
-            throw new Error("user not found");
-        }
+        const user = req.user;
         res.send(user);
     }
     catch(err){
         res.status(500).send("for profile something went wrong" + err.message);
-    }
-    
-
-
+    } 
 });
+
+app.post("/sendconnectionrequest" , auth,  async (req, res) => {
+    try{
+        const user = req.user;
+        console.log("send connection request api called");
+        res.send(user.firstName + " " + "connection request sent successfully");
+    }
+    catch(err){
+        res.status(500).send("for send connection request something went wrong" + err.message);
+    }
+});
+
+
 
 connectdb().then( ()=>{
     console.log("database connected");
@@ -376,6 +374,64 @@ connectdb().then( ()=>{
 //         if(updateData.skills.size > 10){
 //             throw new Error ("skills can not more thann 10");
 //         }
+// //         // if(updateData.email && !validator.isEmail(updateData.email)){
+// //         //     throw new Error("invalid email");
+// //         // }
+// //     }catch(err){
+// //         res.status(500).send("for update user something went wrong");
+// //     }
+// // }); 
+
+
+
+
+// //sign up page code
+// app.post("/signup" , async (req, res) => {
+//     try{
+
+
+//     //validate the signup data
+//     validatesignupdata(req);
+
+//     const password = req.body.password;
+
+//     //encrypt the password
+//     const passwordhash = await bcrypt.hash(password, 10);
+
+//     //create a new user in the database
+//     const userobj = new User({
+//         firstName : req.body.firstName,
+//         lastName : req.body.lastName,
+//         email : req.body.email,
+//         password : passwordhash,
+        
+//     });
+//     await userobj.save();
+//     res.send("user created successfully");
+//     }
+//     catch(err){
+//     console.log(err.message); // 👈 ADD THIS
+//     res.status(400).send(err.message); // show real error
+//     }
+// }
+
+// );  
+// app.patch("/user/:userid", async (req, res) => {
+//     const userid = req.params?.userid;
+//     const updateData = req.body;
+    
+//     try{    
+//         const user = await User.findByIdAndUpdate(userid, updateData, { new: true, runValidators: true });
+//         res.send(user); 
+//         const allowed_updated = [ "age", "gender", "photourl", "about", "skills" ];
+//         const isupadateallowed = Object.keys(updateData).every((key) => allowed_updated.includes(key));
+//         if(!isupadateallowed){
+//         //return res.status(400).send("invalid update");
+//             throw new Error("invalid update");
+//         }
+//         if(updateData.skills.size > 10){
+//             throw new Error ("skills can not more thann 10");
+//         }
 //         // if(updateData.email && !validator.isEmail(updateData.email)){
 //         //     throw new Error("invalid email");
 //         // }
@@ -383,3 +439,54 @@ connectdb().then( ()=>{
 //         res.status(500).send("for update user something went wrong");
 //     }
 // }); 
+
+  
+// // login page cdoe
+// app.post("/login", async (req, res) => {
+//     try{
+//         const emailid = req.body.email;
+//         const password = req.body.password;
+
+//         const user = await User.findOne({ email: emailid });
+//         if(!user){
+//             return res.status(400).send("invalid email id or password");
+//         }
+//         const passmatch = await bcrypt.compare(password, user.password);
+//         if(passmatch){
+//             //create a jwt token 
+//             const token = await jwt.sign({ userid: user._id },"secretkeyhawww");
+//             //add tocken to cookie and send the response back to user 
+//             const decodedmessage = await jwt.verify(token, "secretkeyhawww");
+//             const { _id } = decodedmessage;
+             
+//         } 
+//         else{
+//             return res.status(400).send("invalid email id or password");
+
+//         }
+//     }
+//     catch(err){
+//         res.status(500).send("for login something went wrong");
+//     }
+// });
+
+// app.get("/profile", async (req, res) => {
+
+//     try{
+//         const cookie = req.cookies;
+//         const { token } = cookie;
+//         if(!token){
+//             throw new Error("unauthorized");
+//         }
+//         const decodedmessage = await jwt.verify(token, "secretkeyhawww");
+//         const { _id } = decodedmessage;
+//         const user = await User.findById(_id);
+//         if(!user){
+//             throw new Error("user not found");
+//         }
+//         res.send(user);
+//     }
+//     catch(err){
+//         res.status(500).send("for profile something went wrong" + err.message);
+//         }
+// });
