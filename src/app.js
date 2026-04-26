@@ -10,6 +10,11 @@ const validatesignupdata = require('./utils/validation');
 const auth = require('./middlewares/auth');
 const bcrypt = require('bcrypt');
 app.use(express.json());
+const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
+//for reading cookie data we need to use cookie parser middleware
+
 
 //sign up page code
 app.post("/signup" , async (req, res) => {
@@ -66,7 +71,7 @@ app.patch("/user/:userid", async (req, res) => {
     }
 }); 
 
-
+  
 // login page cdoe
 app.post("/login", async (req, res) => {
     try{
@@ -78,15 +83,50 @@ app.post("/login", async (req, res) => {
             return res.status(400).send("invalid email id or password");
         }
         const passmatch = await bcrypt.compare(password, user.password);
-        if(!passmatch){
+        if(passmatch){
+            //create a jwt token 
+            const token = await jwt.sign({ userid: user._id },"secretkeyhawww");
+            console.log(token);
+
+            //add tocken to cookie and send the response back to user
+            
+            const decodedmessage = await jwt.verify(token, "secretkeyhawww");
+            const { _id } = decodedmessage;
+
+        } 
+        else{
             return res.status(400).send("invalid email id or password");
+
         }
-        res.send("login successful");
     }
 
     catch(err){
         res.status(500).send("for login something went wrong");
     }
+});
+
+app.get("/profile", async (req, res) => {
+
+    try{
+        const cookie = req.cookies;
+        const { token } = cookie;
+        if(!token){
+            throw new Error("unauthorized");
+        }
+        const decodedmessage = await jwt.verify(token, "secretkeyhawww");
+        const { _id } = decodedmessage;
+        const user = await User.findById(_id);
+        if(!user){
+            throw new Error("user not found");
+        }
+        res.send(user);
+    }
+    catch(err){
+        res.status(500).send("for profile something went wrong");
+    }
+    
+
+
 });
 
 connectdb().then( ()=>{
