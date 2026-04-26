@@ -85,7 +85,7 @@ app.post("/login", async (req, res) => {
         const passmatch = await bcrypt.compare(password, user.password);
         if(passmatch){
             //create a jwt token 
-            const token = await jwt.sign({ userid: user._id },"secretkeyhawww");
+            const token = await jwt.sign({ userid: user._id },"secretkeyhawww" , { expiresIn: '1d' });
             //add tocken to cookie and send the response back to user 
             const decodedmessage = await jwt.verify(token, "secretkeyhawww");
             const { _id } = decodedmessage;
