@@ -99,7 +99,6 @@ app.post("/login", async (req, res) => {
 
         }
     }
-
     catch(err){
         res.status(500).send("for login something went wrong");
     }
@@ -122,7 +121,7 @@ app.get("/profile", async (req, res) => {
         res.send(user);
     }
     catch(err){
-        res.status(500).send("for profile something went wrong");
+        res.status(500).send("for profile something went wrong" + err.message);
     }
     
 
