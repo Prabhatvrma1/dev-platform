@@ -89,6 +89,7 @@ app.post("/login", async (req, res) => {
             //add tocken to cookie and send the response back to user 
             const decodedmessage = await jwt.verify(token, "secretkeyhawww");
             const { _id } = decodedmessage;
+            res.cookie("token", token, { expires: new Date(Date.now() + 86400000), httpOnly: true });
              console.log("decoded message", decodedmessage);
              res.send("login successful");
         } 
