@@ -14,7 +14,7 @@ profileroutes.get("/profile/view", auth , async (req, res) => {
         res.send(user);
     }
     catch(err){
-        res.status(500).send("for profile something went wrong" + err.message);
+        res.status(400).send("for profile something went wrong" + err.message);
     } 
 });
 
@@ -33,11 +33,16 @@ profileroutes.patch("/profile/edit", auth, async (req, res) => {
         await user.save();
 
         res.send("Profile updated successfully");
+        res.json()
 
     } catch (err) {
         res.status(400).send("Error with profile update " + err.message);
     }
 });
+
+//password forgot
+
+
 
 
 
