@@ -19,6 +19,18 @@ requestrouter  .post("/request/send/:status/:touserid" , auth,  async (req, res)
             status
         });
 
+        //check if existing connection
+
+        const existingconnectionrequest = await ConnectionRequest.findOne({
+            $or: [ 
+                {fromuserid: fromuserid , touserid: touserid  },
+                { fromuserid: touserid , touserid: fromuserid },
+            ], 
+        })
+        if(existingconnectionrequest){
+            return res.status(400).json({message: "bad reques/already exist "});
+        }
+
        const data = await request.save();
 
         res.json({
