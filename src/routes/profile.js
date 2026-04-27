@@ -3,7 +3,9 @@ const profileroutes = express.Router();
 const User = require('../models/user');
 const auth = require('../middlewares/auth');
 const cookieParser = require('cookie-parser');
-const { validatesignupdata, validateprofiledata } = require('../utils/validation');
+const { validatesignupdata, validateprofiledata , validatepassword } = require('../utils/validation');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 
 
@@ -42,6 +44,25 @@ profileroutes.patch("/profile/edit", auth, async (req, res) => {
 
 //password forgot
 
+profileroutes.patch ("/profile/forgotpass" , auth , async (req,res) =>{
+    try{
+        await  validatepassword(req);
+
+       const user = req.user;   
+       const password = req.body.password;
+
+        const passwordhash = await bcrypt.hash(password, 10);
+
+        user.password = passwordhash;
+        await user.save();
+        res.send("password updated sucessfully");
+        
+    }
+    catch(err){
+        res.status(400).send("something went wromg in profile" + err.message)
+    }
+
+});
 
 
 

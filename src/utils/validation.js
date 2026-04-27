@@ -1,4 +1,7 @@
-const validator = require("validator"); 
+const validator = require("validator");
+const auth = require('../middlewares/auth');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const validatesignupdata = (req) => {
     const{ firstName, lastName, email, password } = req.body;
@@ -35,8 +38,23 @@ try{
 
 }
 
+const validatepassword = async (req) => {
+    const oldPassword = req.body.oldpassword;
+    const hashedPassword = req.user.password;
+
+    if (!oldPassword || !hashedPassword) {
+        throw new Error("password data missing");
+    }
+
+    const isMatch = await bcrypt.compare(oldPassword, hashedPassword);
+
+    if (!isMatch) {
+        throw new Error("invalid old password");
+    }
+};
+
 
 module.exports = 
 {
-    validatesignupdata , validateprofiledata
+    validatesignupdata , validateprofiledata , validatepassword
 };
