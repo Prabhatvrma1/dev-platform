@@ -2,18 +2,32 @@ const express = require('express');
 const requestrouter = express.Router();
 const auth = require('../middlewares/auth');
 const cookieParser = require('cookie-parser');
+const ConnectionRequest = require("../models/connectionrequest");
 
-
-
-
-requestrouter  .post("/sendconnectionrequest" , auth,  async (req, res) => {
+requestrouter  .post("/request/send/:status/:touserid" , auth,  async (req, res) => {
     try{
-        const user = req.user;
-        console.log("send connection request api called");
-        res.send(user.firstName + " " + "connection request sent successfully");
+        const fromuserid = req.user._id;
+        const  touserid = req.params.touserid;
+        const status = req.params.status;
+        const allowedstatus = [ "ignored", "interested"];
+        if( !allowedstatus.includes(status)){
+            return res.status(400).json( {message: "invalid status type" + status});
+        }
+        const request = new ConnectionRequest({
+            fromuserid,
+            touserid,
+            status
+        });
+
+       const data = await request.save();
+
+        res.json({
+            message : " connection sent sucessfuly",
+            data,
+        });
     }
     catch(err){
-        res.status(500).send("for send connection request something went wrong" + err.message);
+        res.status(400).send("for send connection request something went wrong" + err.message);
     }
 });
 
