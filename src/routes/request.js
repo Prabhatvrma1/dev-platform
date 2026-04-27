@@ -1,5 +1,6 @@
 const express = require('express');
 const requestrouter = express.Router();
+const User = require('../models/user');
 const auth = require('../middlewares/auth');
 const cookieParser = require('cookie-parser');
 const ConnectionRequest = require("../models/connectionrequest");
@@ -29,6 +30,11 @@ requestrouter  .post("/request/send/:status/:touserid" , auth,  async (req, res)
         })
         if(existingconnectionrequest){
             return res.status(400).json({message: "bad reques/already exist "});
+        }
+
+        const useridexisted = await User.findById(touserid);
+        if( !useridexisted){
+            return res.status(400).json({message : "user not registered"});
         }
 
        const data = await request.save();
