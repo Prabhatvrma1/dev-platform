@@ -1,6 +1,6 @@
 const express = require('express');
 const authroutes = express.Router();
-const validatesignupdata = require('../utils/validation');
+const {validatesignupdata } = require('../utils/validation');
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -71,6 +71,21 @@ authroutes.post("/login", async (req, res) => {
     }
 });
 
+
+authroutes.post("/logout", async (req,res)  => {
+    try{
+        //res.clearCookie("token");
+        res.cookie("token", null, { expires: new Date(Date.now()), });
+        //diff between clear cookie  and res.cookie code is 
+        res.send("logout successful");
+        console.log("logout api called and logout successful");
+
+    }
+    catch(err){
+        res.status(500).send("for logout something went wrong" + err.message);
+    }
+
+});
 
 
 

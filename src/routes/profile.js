@@ -3,9 +3,11 @@ const profileroutes = express.Router();
 const User = require('../models/user');
 const auth = require('../middlewares/auth');
 const cookieParser = require('cookie-parser');
+const { validatesignupdata, validateprofiledata } = require('../utils/validation');
 
 
-profileroutes.get("/profile", auth , async (req, res) => {
+
+profileroutes.get("/profile/view", auth , async (req, res) => {
 
     try{
         const user = req.user;
@@ -16,8 +18,26 @@ profileroutes.get("/profile", auth , async (req, res) => {
     } 
 });
 
+profileroutes.patch("/profile/edit", auth, async (req, res) => {
+    try {
+        validateprofiledata(req);  
 
 
+        const user = req.user;
+        const data = req.body;
+
+        Object.keys(data).forEach((key) => {
+            user[key] = data[key];
+        });
+
+        await user.save();
+
+        res.send("Profile updated successfully");
+
+    } catch (err) {
+        res.status(400).send("Error with profile update " + err.message);
+    }
+});
 
 
 

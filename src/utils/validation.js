@@ -16,4 +16,27 @@ const validatesignupdata = (req) => {
     }
 };
 
-module.exports = validatesignupdata;
+const validateprofiledata = (req) => {
+try{
+    const allowedfields =  ["firstName", "lastName", "age", "gender", "photourl", "about", "skills"];
+    const data = req.body;
+    const isvalidOperation = Object.keys(data).every((key) =>
+        allowedfields.includes(key)
+    );
+    if( !isvalidOperation){
+        throw new Error("no valid fields in profile data");
+    }
+    
+
+}
+    catch(err){
+        throw new Error(" validator failed" + err.message);
+    }
+
+}
+
+
+module.exports = 
+{
+    validatesignupdata , validateprofiledata
+};
