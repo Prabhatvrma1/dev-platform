@@ -75,13 +75,29 @@ userrouter.get("/user/request/feed" , auth , async (req,res) =>{
         const loginuser = req.user;
 
         //find connection req send or recieved
-        const connectionRequest = await connectionreq.find({
+        const connectionRequest = await connectionrequestmodel.find({
             $or: [
-                { fromuserid : loginuser._id},
-                { touserid : loginuser._id}
+                { fromuserid: loginuser._id },
+                { touserid: loginuser._id }
             ]
+        }).select("fromuserid touserid");
+        // .populate("fromuserid", "firstName lastName")
+        // .populate("touserid", "firstName lastName");
+
+        const hideuserfromfeed = new Set();
+        connectionRequest.forEach(req => {
+            hideuserfromfeed.add(req.fromuserid.toString());
+            hideuserfromfeed.add(req.touserid.toString());
         });
-        
+
+        const user = await User.find({
+            $and:[
+                {_id : {$nin: Array.from(hideuserfromfeed) }},
+                {_id : { $ne: loginuser._id}},
+            ]
+        }).select("firstName lastName photourl age skills");
+        // console.log(user);
+        res.json(user);
 
     }
     catch(err){
