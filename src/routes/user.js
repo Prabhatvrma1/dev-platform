@@ -90,10 +90,11 @@ userrouter.get("/user/request/feed" , auth , async (req,res) =>{
         // .populate("touserid", "firstName lastName");
 
         const hideuserfromfeed = new Set();
-        connectionRequest.forEach(req => {
-            hideuserfromfeed.add(req.fromuserid.toString());
-            hideuserfromfeed.add(req.touserid.toString());
+        connectionRequest.forEach((connection) => {
+            hideuserfromfeed.add(connection.fromuserid.toString());
+            hideuserfromfeed.add(connection.touserid.toString());
         });
+
 
         const user = await User.find({
             $and:[
