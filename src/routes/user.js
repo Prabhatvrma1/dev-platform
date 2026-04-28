@@ -68,6 +68,29 @@ userrouter.get("/user/request/connection", auth , async (req, res) =>{
     }
 });
 
+userrouter.get("/user/request/feed" , auth , async (req,res) =>{
+    try{
+
+        //avoid his own  card , connection , accpedt or rejected or interested or not interested
+        const loginuser = req.user;
+
+        //find connection req send or recieved
+        const connectionRequest = await connectionreq.find({
+            $or: [
+                { fromuserid : loginuser._id},
+                { touserid : loginuser._id}
+            ]
+        });
+        
+
+    }
+    catch(err){
+        res.status(400).json({ message : "something went wrong for feed" + err.message });
+    }
+
+
+});
+
 
 
 
