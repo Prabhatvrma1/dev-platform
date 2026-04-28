@@ -21,17 +21,16 @@ const connectionRequestSchema = new mongoose.Schema({
     }
 
 
-},{ Timestamp:true });
+},{ timestamps:true });
 
-connectionRequestSchema.pre("save", function(){
+connectionRequestSchema.pre("save", function(next){
     const connectionrequest = this;
-    //check from user id same as to userid
-    if(connectionrequest.fromuserid.equals(connectionrequest.touserid))
-    {
-        throw new Error(" dont send request to yourself");
+
+    if (connectionrequest.fromuserid.equals(connectionrequest.touserid)) {
+        throw new Error("dont send request to yourself");
     }
-    next(); 
-})
+
+});
 
 const connectionrequestmodel =  new mongoose.model("connectionrequestmodel", connectionRequestSchema);
 module.exports = connectionrequestmodel;

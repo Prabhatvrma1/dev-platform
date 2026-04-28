@@ -26,7 +26,7 @@ requestrouter  .post("/request/send/:status/:touserid" , auth,  async (req, res)
             $or: [ 
                 {fromuserid: fromuserid , touserid: touserid  },
                 { fromuserid: touserid , touserid: fromuserid },
-                { fromuseris : fromuserid, touserid: fromuserid}
+                { fromuserid : fromuserid, touserid: fromuserid}
             ], 
         })
         if(existingconnectionrequest){
@@ -40,9 +40,10 @@ requestrouter  .post("/request/send/:status/:touserid" , auth,  async (req, res)
 
        const data = await request.save();
 
+        const touser = await User.findById(touserid);
+
         res.json({
-            message : " connection sent sucessfuly",
-            data,
+            message: req.user.firstName + " is " + status + " in " + touser.firstName + "'s profile", data
         });
     }
     catch(err){
