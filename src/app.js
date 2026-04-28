@@ -20,7 +20,7 @@ const userrouter = require('./routes/user');
 app.use("/", authroutes);
 app.use("/", profileroutes);
 app.use("/", requestrouter);
-app.use("/", userrouter);   
+app.use("/", userrouter);    
 
 //sign up page code
  

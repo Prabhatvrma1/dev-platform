@@ -8,7 +8,7 @@ const ConnectionRequest = require("../models/connectionrequest");
 const connectionrequestmodel = require("../models/connectionrequest");
 
 
-userrouter.get("/user/request", auth , async (req, res) =>{
+userrouter.get("/user/request/recieved", auth , async (req, res) =>{
     try{
 
         //login user 
@@ -19,7 +19,7 @@ userrouter.get("/user/request", auth , async (req, res) =>{
         const connectionreq = await  connectionrequestmodel.find({
             touserid:loginuser._id,
             status: "interested",
-        });
+        }).populate("fromuserid", ["firstName", "lastName"])
 
         if( !connectionreq) {
             throw new Error(" somthing wrong with connectoion req " + err.message);
