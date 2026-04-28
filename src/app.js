@@ -14,11 +14,13 @@ app.use(cookieParser());
 const authroutes = require('./routes/auth');
 const profileroutes = require('./routes/profile');
 const requestrouter = require('./routes/request');
+const userrouter = require('./routes/user');
 
 
-app.use("/" , authroutes);
-app.use("/" , profileroutes);
-app.use("/" , requestrouter);
+app.use("/", authroutes);
+app.use("/", profileroutes);
+app.use("/", requestrouter);
+app.use("/", userrouter);   
 
 //sign up page code
  
