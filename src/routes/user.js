@@ -73,6 +73,11 @@ userrouter.get("/user/request/feed" , auth , async (req,res) =>{
 
         //avoid his own  card , connection , accpedt or rejected or interested or not interested
         const loginuser = req.user;
+        const page = parseInt(req.query.page) || 1;
+        let limit = parseInt(req.query.limit) || 10;
+        limit = limit >50 ? 50 : limit;
+        const skip = (page -1 ) * limit;
+
 
         //find connection req send or recieved
         const connectionRequest = await connectionrequestmodel.find({
@@ -95,7 +100,7 @@ userrouter.get("/user/request/feed" , auth , async (req,res) =>{
                 {_id : {$nin: Array.from(hideuserfromfeed) }},
                 {_id : { $ne: loginuser._id}},
             ]
-        }).select("firstName lastName photourl age skills");
+        }).select("firstName lastName photourl age skills").skip(skip).limit(limit);
         // console.log(user);
         res.json(user);
 
