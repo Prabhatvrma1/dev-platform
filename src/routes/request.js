@@ -26,6 +26,7 @@ requestrouter  .post("/request/send/:status/:touserid" , auth,  async (req, res)
             $or: [ 
                 {fromuserid: fromuserid , touserid: touserid  },
                 { fromuserid: touserid , touserid: fromuserid },
+                { fromuseris : fromuserid, touserid: fromuserid}
             ], 
         })
         if(existingconnectionrequest){
