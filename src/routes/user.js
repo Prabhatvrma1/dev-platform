@@ -19,22 +19,53 @@ userrouter.get("/user/request/recieved", auth , async (req, res) =>{
         const connectionreq = await  connectionrequestmodel.find({
             touserid:loginuser._id,
             status: "interested",
-        }).populate("fromuserid", ["firstName", "lastName"])
+        }).populate("fromuserid", ["firstName", "lastName" , "photourl","age" , "skills"])
 
         if( !connectionreq) {
-            throw new Error(" somthing wrong with connectoion req " + err.message);
+            throw new Error(" somthing wrong with connectoion req for recieved " + err.message);
 
         }
     
         res.send(connectionreq);
-
- 
-
     }
     catch(err){
         res.status(400).send(" something went wrong with userrouter " + err.message);
     }
+});
 
+userrouter.get("/user/request/connection", auth , async (req, res) =>{
+    try{
+
+        //login user 
+        // touser = loginuser
+        //status = interested
+        const loginuser = req.user;
+        //const touserid = req.user.touserid;
+        const connectionreq = await connectionrequestmodel.find({
+    $or: [
+        { touserid: loginuser._id, status: "accepted" },
+        { fromuserid: loginuser._id, status: "accepted" }
+    ]
+        })
+        .populate("fromuserid", ["firstName", "lastName", "photourl", "age", "skills"])
+        .populate("touserid", ["firstName", "lastName", "photourl", "age", "skills"]);
+        const data = connectionreq.map((row) => {
+        if (row.fromuserid._id.toString() === loginuser._id.toString()) {
+             return row.touserid;
+        } else {
+            return row.fromuserid; 
+        }
+        }); 
+        if( !connectionreq) {
+            throw new Error(" somthing wrong with connectoion req for connection api  " + err.message);
+
+        }
+    
+        res.send(data);
+    }
+    catch(err){
+        res.status(400).send(" something went wrong with userrouter " + err.message);
+    }
 });
 
 
