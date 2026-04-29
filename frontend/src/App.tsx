@@ -7,7 +7,7 @@ function App() {
           <a className="btn btn-ghost text-xl">Dev Tinder</a>
         </div>
         <div className=" flex gap-2">
-          <div className="dropdown dropdown-end">
+          <div className="mr-4 dropdown dropdown-end">
             <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
               <div className=" w-10 rounded-full">
                 <img
