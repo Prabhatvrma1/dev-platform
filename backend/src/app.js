@@ -9,8 +9,6 @@ app.use(express.json());
 app.use(cookieParser());
 
 
-
-
 const authroutes = require('./routes/auth');
 const profileroutes = require('./routes/profile');
 const requestrouter = require('./routes/request');
