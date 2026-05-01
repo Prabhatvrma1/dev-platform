@@ -13,7 +13,7 @@ const Login = () => {
             <div className='mt-4'>
                   <fieldset className="fieldset">
                     <legend className="fieldset-legend">Email id</legend>
-                    <input type="text" value={ emailid} className="input" placeholder="Type here" />
+                    <input type="text" value={emailid} className="input" placeholder="Type here" />
                   </fieldset>
               <div className='mt-2'>
                   <fieldset className="fieldset">
@@ -21,8 +21,6 @@ const Login = () => {
                     <input type="text" value={password} className="input" placeholder="Type here" />
                   </fieldset>
               </div>
-
-
 
             </div>
             <div className="card-actions justify-around mt-5">
