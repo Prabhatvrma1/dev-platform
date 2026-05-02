@@ -1,4 +1,4 @@
-import { useAppSelector } from "./hooks";
+import { useAppSelector } from "../hooks";
 import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
