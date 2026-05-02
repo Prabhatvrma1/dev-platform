@@ -3,8 +3,11 @@ const connectdb = require('./config/database');
 const app = express();
 // app.use(express.json()); //this will parse the json data from the request body and make it available in req.body    
 const cookieParser = require('cookie-parser');
-
-
+const cors = require("cors");
+app.use(cors({
+  origin: "http://localhost:5173",
+  credentials: true
+}));
 app.use(express.json());
 app.use(cookieParser());
 

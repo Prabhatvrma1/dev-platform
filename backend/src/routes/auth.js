@@ -59,7 +59,7 @@ authroutes.post("/login", async (req, res) => {
             const { _id } = decodedmessage;
             res.cookie("token", token, { expires: new Date(Date.now() + 86400000), httpOnly: true });
             //console.log("decoded message", decodedmessage);
-             res.send("login successful");
+             res.send("login successful" + user);
         } 
         else{
             return res. status(400).send("invalid email id or password");
