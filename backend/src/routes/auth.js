@@ -42,33 +42,37 @@ authroutes.post("/signup" , async (req, res) => {
 
 
 authroutes.post("/login", async (req, res) => {
-    try{
-        const emailid = req.body.email;
-        const password = req.body.password;
+  try {
+    const emailid = req.body.email;
+    const password = req.body.password;
 
-        const user = await User.findOne({ email: emailid });
-        if(!user){
-            return res.status(400).send("invalid email id or password");
-        }
-        const passmatch = await user.validatepassword(password);
-        if(passmatch){
-            //create a jwt token 
-            const token = await user.getJWT();
-            //add tocken to cookie and send the response back to user 
-            const decodedmessage = await jwt.verify(token, "secretkeyhawww");
-            const { _id } = decodedmessage;
-            res.cookie("token", token, { expires: new Date(Date.now() + 86400000), httpOnly: true });
-            //console.log("decoded message", decodedmessage);
-             res.send("login successful " + "name" + user.firstName + " " + " last name" + user.lastName + " " + " user email addres" + user.email);
-        } 
-        else{
-            return res. status(400).send("invalid email id or password");
+    const user = await User.findOne({ email: emailid });
 
-        }
+    if (!user) {
+      return res.status(400).json({ message: "invalid email or password" });
     }
-    catch(err){
-        res.status(500).send("for login something went wrong" + err.message);
+
+    const passmatch = await user.validatepassword(password);
+
+    if (!passmatch) {
+      return res.status(400).json({ message: "invalid email or password" });
     }
+
+    const token = await user.getJWT();
+
+    res.cookie("token", token, {
+      expires: new Date(Date.now() + 86400000),
+      httpOnly: true,
+    });
+
+    res.json({
+      message: "login successful",
+      user: user,
+    });
+
+  } catch (err) {
+    res.status(500).json({ message: "login failed", error: err.message });
+  }
 });
 
 
