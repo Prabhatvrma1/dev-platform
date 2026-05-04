@@ -20,6 +20,7 @@ function AppContent() {
   const userdata = useAppSelector((store) => store.user);
 
   const fetchuser = async () => {
+    if(userdata) return ;
     try {
       const res = await axios.get(BASE_URL + "/profile/view", {
         withCredentials: true,
@@ -34,9 +35,7 @@ function AppContent() {
   };
 
   useEffect(() => {
-    if(!userdata){
     fetchuser();
-    }
   }, []);
 
   return (
