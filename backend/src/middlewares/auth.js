@@ -8,7 +8,7 @@ try{
     
     const token = req.cookies.token;
     if(!token){
-        throw new Error('not valid token');
+        return res.status(401).send("not login! please login");
     }
     const decodeddata = await jwt.verify(token, "secretkeyhawww");
     
