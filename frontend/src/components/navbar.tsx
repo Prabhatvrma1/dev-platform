@@ -1,16 +1,24 @@
-import { useAppSelector } from "../hooks";
+import { useAppSelector, useAppDispatch } from "../hooks";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { removeUser } from "../utils/userSlice";
 
 const Navbar = () => {
   const user = useAppSelector((store) => store.user.currentUser);
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  const handleLogout = () => {
+    dispatch(removeUser());
+    navigate("/login");
+  };
 
   return (
     <div className="navbardiv">
       <div className="navbar bg-base-300 shadow-sm px-4">
 
         <div className="flex-1">
-          <a className="btn btn-ghost text-xl">Dev Tinder</a>
+          <Link to="/" className="btn btn-ghost text-xl">Dev Tinder</Link>
         </div>
 
         {user && (
@@ -51,7 +59,7 @@ const Navbar = () => {
                   </a>
                 </li>
                 <li>
-                  <a onClick={() => navigate("/logout")}>
+                  <a onClick={handleLogout}>
                     Logout
                   </a>
                 </li>

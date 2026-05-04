@@ -10,17 +10,19 @@ import Feed from "./components/Feed";
 import axios from "axios";
 import { BASE_URL } from "./utils/constants";
 import { useAppDispatch, useAppSelector } from "./hooks";
-import { addUser } from "./utils/userSlice";
-import { useEffect } from "react";
+import { addUser, removeUser } from "./utils/userSlice";
+import { useEffect, useRef } from "react";
 
 function AppContent() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const user = useAppSelector((store) => store.user);
+  const hasInitialized = useRef(false);
 
   useEffect(() => {
-    // already have user → don’t refetch
-    if (user) return;
+    // Only run once on initial mount
+    if (hasInitialized.current) return;
+    hasInitialized.current = true;
 
     const fetchuser = async () => {
       try {
@@ -29,6 +31,7 @@ function AppContent() {
         });
         dispatch(addUser(res.data));
       } catch (err: any) {
+        dispatch(removeUser());
         if (err?.response?.status === 401) {
           navigate("/login");
         }
@@ -37,7 +40,7 @@ function AppContent() {
     };
 
     fetchuser();
-  }, [user, dispatch, navigate]);
+  }, []);
 
   return (
     <>
