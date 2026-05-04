@@ -1,52 +1,36 @@
 const express = require('express');
 const authroutes = express.Router();
-const {validatesignupdata } = require('../utils/validation');
+const { validatesignupdata } = require('../utils/validation');
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const auth = require('../middlewares/auth');
-const cookieParser = require('cookie-parser');
-const validator = require('validator');
 
-
-
-authroutes.post("/signup" , async (req, res) => {
-    try{
-
-    //validate the signup data
+authroutes.post("/signup", async (req, res) => {
+  try {
     validatesignupdata(req);
 
-    const password = req.body.password;
+    const passwordhash = await bcrypt.hash(req.body.password, 10);
 
-    //encrypt the password
-    const passwordhash = await bcrypt.hash(password, 10);
-
-    //create a new user in the database
     const userobj = new User({
-        firstName : req.body.firstName,
-        lastName : req.body.lastName,
-        email : req.body.email,
-        password : passwordhash,
-        
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      email: req.body.email,
+      password: passwordhash,
     });
+
     await userobj.save();
-    res.send("user created successfully");
-    }
-    catch(err){
+
+    return res.json({ message: "user created successfully" });
+  } catch (err) {
     console.log(err.message);
-    res.status(400).send(err.message);
-    }
-}
-
-);  
-
+    return res.status(400).json({ error: err.message });
+  }
+});
 
 authroutes.post("/login", async (req, res) => {
   try {
-    const emailid = req.body.email;
-    const password = req.body.password;
+    const { email, password } = req.body;
 
-    const user = await User.findOne({ email: emailid });
+    const user = await User.findOne({ email });
 
     if (!user) {
       return res.status(400).json({ message: "invalid email or password" });
@@ -61,46 +45,39 @@ authroutes.post("/login", async (req, res) => {
     const token = await user.getJWT();
 
     res.cookie("token", token, {
-      expires: new Date(Date.now() + 86400000),
       httpOnly: true,
+      sameSite: "lax",
+      secure: false,
+      maxAge: 24 * 60 * 60 * 1000,
     });
 
-    res.json({
+    const { password: _, ...safeUser } = user.toObject();
+
+    return res.json({
       message: "login successful",
-      user: user,
+      user: safeUser,
     });
 
   } catch (err) {
-    res.status(500).json({ message: "login failed", error: err.message });
+    return res.status(500).json({
+      message: "login failed",
+      error: err.message,
+    });
+  }
+});
+
+authroutes.post("/logout", async (req, res) => {
+  try {
+    res.clearCookie("token");
+    return res.json({ message: "logout successful" });
+  } catch (err) {
+    return res.status(500).json({
+      message: "logout failed",
+      error: err.message,
+    });
   }
 });
 
 
-authroutes.post("/logout", async (req,res)  => {
-    try{
-        //res.clearCookie("token");
-        res.cookie("token", null, { expires: new Date(Date.now()), });
-        //diff between clear cookie  and res.cookie code is 
-        res.send("logout successful");
-        console.log("logout api called and logout successful");
 
-    }
-    catch(err){
-        res.status(500).send("for logout something went wrong" + err.message);
-    }
-
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-module.exports = authroutes;
+module.exports = authroutes;  

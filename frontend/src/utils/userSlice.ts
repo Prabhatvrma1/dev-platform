@@ -15,8 +15,18 @@ type UserState = {
   currentUser: User | null;
 };
 
+// Load user from localStorage if available
+const loadUserFromStorage = (): User | null => {
+  try {
+    const stored = localStorage.getItem("user");
+    return stored ? JSON.parse(stored) : null;
+  } catch {
+    return null;
+  }
+};
+
 const initialState: UserState = {
-  currentUser: null,
+  currentUser: loadUserFromStorage(),
 };
 
 const userSlice = createSlice({
@@ -25,9 +35,11 @@ const userSlice = createSlice({
   reducers: {
     addUser: (state, action: PayloadAction<User>) => {
       state.currentUser = action.payload;
+      localStorage.setItem("user", JSON.stringify(action.payload));
     },
     removeUser: (state) => {
       state.currentUser = null;
+      localStorage.removeItem("user");
     },
   },
 });

@@ -16,32 +16,32 @@ import { useEffect } from "react";
 function AppContent() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-
-  const userdata = useAppSelector((store) => store.user);
-
-  const fetchuser = async () => {
-    if(userdata) return ;
-    try {
-      const res = await axios.get(BASE_URL + "/profile/view", {
-        withCredentials: true,
-      });
-      dispatch(addUser(res.data));
-    } catch (err: any) {
-      if (err?.response?.status === 401) {
-        navigate("/login");
-      }
-      console.log(err);
-    }
-  };
+  const user = useAppSelector((store) => store.user);
 
   useEffect(() => {
+    // already have user → don’t refetch
+    if (user) return;
+
+    const fetchuser = async () => {
+      try {
+        const res = await axios.get(BASE_URL + "/profile/view", {
+          withCredentials: true,
+        });
+        dispatch(addUser(res.data));
+      } catch (err: any) {
+        if (err?.response?.status === 401) {
+          navigate("/login");
+        }
+        console.log(err);
+      }
+    };
+
     fetchuser();
-  }, []);
+  }, [user, dispatch, navigate]);
 
   return (
     <>
       <Navbar />
-
       <Routes>
         <Route path="/" element={<Body />}>
           <Route index element={<Feed />} />
@@ -49,7 +49,6 @@ function AppContent() {
           <Route path="profile" element={<Profile />} />
         </Route>
       </Routes>
-
       <Footer />
     </>
   );
