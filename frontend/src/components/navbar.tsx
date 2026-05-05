@@ -36,8 +36,7 @@ const Navbar = () => {
                   <img
                     alt="user"
                     src={
-                      user.photourl ||
-                      "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                      user.photourl || "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
                     }
                   />
                 </div>
