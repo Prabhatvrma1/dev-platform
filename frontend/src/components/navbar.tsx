@@ -2,15 +2,25 @@ import { useAppSelector, useAppDispatch } from "../hooks";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { removeUser } from "../utils/userSlice";
+import axios from "axios";
+import { BASE_URL } from "../utils/constants";
 
 const Navbar = () => {
   const user = useAppSelector((store) => store.user.currentUser);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const handleLogout = () => {
-    dispatch(removeUser());
-    navigate("/login");
+  const handleLogout =  async () => {
+    try{
+      await axios.post(BASE_URL + "/logout",{},{withCredentials: true});
+        dispatch(removeUser());
+        navigate("/login");
+    }
+    catch(err){
+       
+    }
+    // dispatch(removeUser());
+    // navigate("/login");
   };
 
   return (
