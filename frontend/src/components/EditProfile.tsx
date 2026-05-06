@@ -1,9 +1,8 @@
-import { memo, useState } from "react";
+import { memo, useState, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
 import { addUser } from "../utils/userSlice";
-import { useNavigate } from "react-router-dom";
 
 const EditProfile = () => {
 
@@ -11,20 +10,33 @@ const EditProfile = () => {
 
   const dispatch = useAppDispatch();
 
-  const navigate = useNavigate();
-
-  const [firstName, setFirstName] = useState(user?.firstName || "");
-  const [lastName, setLastName] = useState(user?.lastName || "");
-  const [photourl, setPhotoUrl] = useState(user?.photourl || "");
-  const [age, setAge] = useState(user?.age || "");
-  const [skills, setSkills] = useState(
-    user?.skills?.join(", ") || ""
-  );
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [photourl, setPhotoUrl] = useState("");
+  const [age, setAge] = useState<number | string>("");
+  const [gender, setGender] = useState("");
+  const [about, setAbout] = useState("");
+  const [skills, setSkills] = useState("");
 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
+  useEffect(() => {
+
+    if (!user) return;
+
+    setFirstName(user.firstName || "");
+    setLastName(user.lastName || "");
+    setPhotoUrl(user.photourl || "");
+    setAge(user.age || "");
+    setGender(user.gender || "");
+    setAbout(user.about || "");
+    setSkills(user.skills?.join(", ") || "");
+
+  }, [user]);
+
   const saveProfile = async () => {
+
     try {
 
       setError("");
@@ -37,7 +49,11 @@ const EditProfile = () => {
           lastName,
           photourl,
           age,
-          skills: skills.split(",").map((s) => s.trim()),
+          gender,
+          about,
+          skills: skills
+            .split(",")
+            .map((s) => s.trim()),
         },
         {
           withCredentials: true,
@@ -47,10 +63,6 @@ const EditProfile = () => {
       dispatch(addUser(res.data.data));
 
       setSuccess("Profile updated successfully");
-
-      setTimeout(() => {
-        navigate("/profile");
-      }, 1000);
 
     } catch (err: any) {
 
@@ -64,120 +76,147 @@ const EditProfile = () => {
   };
 
   return (
-    <div className="flex justify-center my-10">
 
-      <div className="card bg-base-200 w-96 shadow-xl">
+    <div className="card bg-base-200 shadow-2xl">
 
-        <div className="card-body">
+      <div className="card-body">
 
-          <h2 className="card-title justify-center text-3xl mb-4">
-            Edit Profile
-          </h2>
+        <h2 className="card-title justify-center text-3xl mb-4">
+          Edit Profile
+        </h2>
 
-          <fieldset className="fieldset">
+        <fieldset className="fieldset">
 
-            <legend className="fieldset-legend">
-              First Name
-            </legend>
+          <legend className="fieldset-legend">
+            First Name
+          </legend>
 
-            <input
-              type="text"
-              className="input input-bordered w-full"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-            />
+          <input
+            type="text"
+            className="input input-bordered w-full"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+          />
 
-          </fieldset>
+        </fieldset>
 
-          <fieldset className="fieldset mt-3">
+        <fieldset className="fieldset mt-3">
 
-            <legend className="fieldset-legend">
-              Last Name
-            </legend>
+          <legend className="fieldset-legend">
+            Last Name
+          </legend>
 
-            <input
-              type="text"
-              className="input input-bordered w-full"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-            />
+          <input
+            type="text"
+            className="input input-bordered w-full"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+          />
 
-          </fieldset>
+        </fieldset>
 
-          <fieldset className="fieldset mt-3">
+        <fieldset className="fieldset mt-3">
 
-            <legend className="fieldset-legend">
-              Photo URL
-            </legend>
+          <legend className="fieldset-legend">
+            Photo URL
+          </legend>
 
-            <input
-              type="text"
-              className="input input-bordered w-full"
-              value={photourl}
-              onChange={(e) => setPhotoUrl(e.target.value)}
-            />
+          <input
+            type="text"
+            className="input input-bordered w-full"
+            value={photourl}
+            onChange={(e) => setPhotoUrl(e.target.value)}
+          />
 
-          </fieldset>
+        </fieldset>
 
-          <fieldset className="fieldset mt-3">
+        <fieldset className="fieldset mt-3">
 
-            <legend className="fieldset-legend">
-              Age
-            </legend>
+          <legend className="fieldset-legend">
+            Age
+          </legend>
 
-            <input
-              type="number"
-              className="input input-bordered w-full"
-              value={age}
-              onChange={(e) => setAge(e.target.value)}
-            />
+          <input
+            type="number"
+            className="input input-bordered w-full"
+            value={age}
+            onChange={(e) => setAge(e.target.value)}
+          />
 
-          </fieldset>
+        </fieldset>
 
-          <fieldset className="fieldset mt-3">
+        <fieldset className="fieldset mt-3">
 
-            <legend className="fieldset-legend">
-              Skills
-            </legend>
+          <legend className="fieldset-legend">
+            Gender
+          </legend>
 
-            <input
-              type="text"
-              className="input input-bordered w-full"
-              placeholder="React, Node, MongoDB"
-              value={skills}
-              onChange={(e) => setSkills(e.target.value)}
-            />
+          <input
+            type="text"
+            className="input input-bordered w-full"
+            value={gender}
+            onChange={(e) => setGender(e.target.value)}
+          />
 
-          </fieldset>
+        </fieldset>
 
-          {error && (
-            <p className="text-red-500 mt-3 text-center">
-              {error}
-            </p>
-          )}
+        <fieldset className="fieldset mt-3">
 
-          {success && (
-            <p className="text-green-500 mt-3 text-center">
-              {success}
-            </p>
-          )}
+          <legend className="fieldset-legend">
+            About
+          </legend>
 
-          <div className="card-actions justify-center mt-5">
+          <textarea
+            className="textarea textarea-bordered w-full"
+            value={about}
+            onChange={(e) => setAbout(e.target.value)}
+          />
 
-            <button
-              className="btn btn-primary w-full"
-              onClick={saveProfile}
-            >
-              Save Profile
-            </button>
+        </fieldset>
 
-          </div>
+        <fieldset className="fieldset mt-3">
+
+          <legend className="fieldset-legend">
+            Skills
+          </legend>
+
+          <input
+            type="text"
+            className="input input-bordered w-full"
+            placeholder="React, Node, MongoDB"
+            value={skills}
+            onChange={(e) => setSkills(e.target.value)}
+          />
+
+        </fieldset>
+
+        {error && (
+          <p className="text-red-500 mt-3 text-center">
+            {error}
+          </p>
+        )}
+
+        {success && (
+          <p className="text-green-500 mt-3 text-center">
+            {success}
+          </p>
+        )}
+
+        <div className="card-actions justify-center mt-5">
+
+          <button
+            className="btn btn-primary w-full"
+            onClick={saveProfile}
+          >
+            Save Profile
+          </button>
 
         </div>
 
       </div>
 
     </div>
+
   );
 };
 

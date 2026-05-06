@@ -1,21 +1,18 @@
 import { memo } from 'react';
+import type { User } from '../utils/userSlice';
 
-interface User {
-  firstName: string;
-  lastName: string;
-  photourl?: string;
-  age?: number;
-  skills?: string[];
+interface UserCardProps {
+  user: User;
 }
 
-const UserCard = ({ user }: { user: User }) => {
+const UserCard = ({ user }: UserCardProps) => {
 
   if (!user) return null;
 
   return (
-    <div className="card bg-base-100 w-96 shadow-xl">
+    <div className="card bg-base-200 w-96 shadow-2xl">
 
-      <figure className="h-80 overflow-hidden">
+      <figure className="h-[350px] overflow-hidden">
         <img
           src={
             user.photourl ||
@@ -32,12 +29,17 @@ const UserCard = ({ user }: { user: User }) => {
           {user.firstName} {user.lastName}
         </h2>
 
-        <p className="text-sm text-gray-500">
-          Age: {user.age || "N/A"}
+        <p className="text-gray-400">
+          {user.age || "N/A"}, {user.gender || "Others"}
         </p>
 
-        {user.skills?.length > 0 && (
-          <div className="flex flex-wrap gap-2 mt-2">
+        <p className="mt-4 text-sm">
+          {user.about || "No about added yet"}
+        </p>
+
+        {user.skills && user.skills.length > 0 && (
+          <div className="flex flex-wrap gap-2 mt-3">
+
             {user.skills.map((skill, index) => (
               <span
                 key={index}
@@ -46,22 +48,24 @@ const UserCard = ({ user }: { user: User }) => {
                 {skill}
               </span>
             ))}
+
           </div>
         )}
 
-        <div className="card-actions justify-between mt-5">
+        <div className="card-actions justify-center mt-6 gap-4">
 
-          <button className="btn btn-secondary">
+          <button className="btn btn-primary">
             Ignore
           </button>
 
-          <button className="btn btn-success">
+          <button className="btn btn-secondary">
             Interested
           </button>
 
         </div>
 
       </div>
+
     </div>
   );
 };

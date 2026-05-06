@@ -9,6 +9,8 @@ export interface User {
   photourl?: string;
   age?: number;
   skills?: string[];
+  gender?: string;
+  about?: string;
 }
 
 type UserState = {
