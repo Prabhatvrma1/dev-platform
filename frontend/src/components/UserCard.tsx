@@ -1,22 +1,67 @@
 import { memo } from 'react';
 
-const UserCard = ({user}) => {
+interface User {
+  firstName: string;
+  lastName: string;
+  photourl?: string;
+  age?: number;
+  skills?: string[];
+}
+
+const UserCard = ({ user }: { user: User }) => {
+
+  if (!user) return null;
+
   return (
-    <div>
-      <div className="card bg-base-100 w-96 shadow-sm">
-        <figure>
-            <img
-            src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
-            alt="Shoes" />
-        </figure>
-        <div className="card-body">
-            <h2 className="card-title">Card Title</h2>
-            <p>A card component has a figure, a body part, and inside body there are title and actions parts</p>
-            <div className="card-actions justify-end">
-            <button className="btn btn-primary">Buy Now</button>
-            </div>
+    <div className="card bg-base-100 w-96 shadow-xl">
+
+      <figure className="h-80 overflow-hidden">
+        <img
+          src={
+            user.photourl ||
+            "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+          }
+          alt="user"
+          className="w-full h-full object-cover"
+        />
+      </figure>
+
+      <div className="card-body">
+
+        <h2 className="card-title text-2xl">
+          {user.firstName} {user.lastName}
+        </h2>
+
+        <p className="text-sm text-gray-500">
+          Age: {user.age || "N/A"}
+        </p>
+
+        {user.skills?.length > 0 && (
+          <div className="flex flex-wrap gap-2 mt-2">
+            {user.skills.map((skill, index) => (
+              <span
+                key={index}
+                className="badge badge-primary"
+              >
+                {skill}
+              </span>
+            ))}
+          </div>
+        )}
+
+        <div className="card-actions justify-between mt-5">
+
+          <button className="btn btn-secondary">
+            Ignore
+          </button>
+
+          <button className="btn btn-success">
+            Interested
+          </button>
+
         </div>
-        </div>
+
+      </div>
     </div>
   );
 };
