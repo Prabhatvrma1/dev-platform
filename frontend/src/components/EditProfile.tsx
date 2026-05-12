@@ -60,7 +60,7 @@ const EditProfile = () => {
         }
       );
 
-      dispatch(addUser(res.data.data));
+      dispatch(addUser(res.data.user));
 
       setSuccess("Profile updated successfully");
 

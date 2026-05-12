@@ -5,7 +5,7 @@ import { useAppSelector } from '../hooks';
 
 const Profile = () => {
 
-  const user = useAppSelector((store) => store.user);
+  const user = useAppSelector((store) => store.user.currentUser);
 
   if (!user) {
     return (

@@ -18,7 +18,7 @@ import Requests from "./components/Requests";
 function AppContent() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const user = useAppSelector((store) => store.user);
+  const user = useAppSelector((store) => store.user.currentUser);
   const hasInitialized = useRef(false);
 
   useEffect(() => {
