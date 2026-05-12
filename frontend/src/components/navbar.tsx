@@ -63,9 +63,7 @@ const Navbar = () => {
                   </a>
                 </li>
                 <li>
-                  <a onClick={() => navigate("/settings")}>
-                    Settings
-                  </a>
+                  <Link to="/Connection"> Connections </Link>
                 </li>
                 <li>
                   <a onClick={handleLogout}>

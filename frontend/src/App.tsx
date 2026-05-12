@@ -12,6 +12,8 @@ import { BASE_URL } from "./utils/constants";
 import { useAppDispatch, useAppSelector } from "./hooks";
 import { addUser, removeUser } from "./utils/userSlice";
 import { useEffect, useRef } from "react";
+import Connection from "./components/Connection";
+import Requests from "./components/Requests";
 
 function AppContent() {
   const dispatch = useAppDispatch();
@@ -51,6 +53,9 @@ function AppContent() {
           <Route path="feed" element={<Feed />} />
           <Route path="login" element={<Login />} />
           <Route path="profile" element={<Profile />} />
+          <Route path="connection" element={<Connection />} />
+          <Route path="requests" element={<Requests />} />
+
         </Route>
       </Routes>
       <Footer />
